@@ -1,0 +1,74 @@
+import java.util.Scanner;
+
+public class StudentMarks {
+
+    public static String[] studentNames = new String[10];
+    public static double[] studentMarks = new double[10];
+    public static int studentCount = 0;
+
+    public static double calculateAverage(String studentName) {
+
+        for (int i = 0; i < studentCount; i++) {
+            if (studentNames[i].equalsIgnoreCase(studentName)) {
+                return studentMarks[i];
+            }
+        }
+        return -1;
+    }
+
+    public static double calculateClassAverage() {
+        double totalMarks = 0;
+        for (int i = 0; i < studentCount; i++) {
+            totalMarks += studentMarks[i];
+        }
+        return studentCount > 0 ? totalMarks / studentCount : 0;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        for (int i = 0; i < 5; i++) {
+            System.out.print("Enter student name: ");
+            studentNames[i] = scanner.nextLine();
+
+            System.out.print("Enter marks for " + studentNames[i] + ": ");
+            studentMarks[i] = scanner.nextDouble();
+            scanner.nextLine();
+            studentCount++;
+        }
+
+        boolean addMoreStudents = true;
+        while (addMoreStudents && studentCount < studentNames.length) {
+            System.out.print("Enter additional student name (or type 'exit' to stop): ");
+            String additionalName = scanner.nextLine();
+
+            if (additionalName.equalsIgnoreCase("exit")) {
+                addMoreStudents = false;
+            }
+            else {
+                System.out.print("Enter marks for " + additionalName + ": ");
+                double additionalMarks = scanner.nextDouble();
+                scanner.nextLine();
+
+                studentNames[studentCount] = additionalName;
+                studentMarks[studentCount] = additionalMarks;
+                studentCount++;
+            }
+        }
+
+        System.out.print("Enter a student name to check their marks: ");
+        String studentName = scanner.nextLine();
+
+        double studentAverage = calculateAverage(studentName);
+        if (studentAverage != -1) {
+            System.out.println(studentName + "'s mark is: " + studentAverage);
+        }
+        else {
+            System.out.println(studentName+ " not found.");
+        }
+        double classAverage = calculateClassAverage();
+        System.out.println("Class average mark: " + classAverage);
+
+        scanner.close();
+    }
+}
