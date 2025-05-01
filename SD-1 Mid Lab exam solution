@@ -1,0 +1,84 @@
+import java.util.Scanner;
+class EducationalInstitution{
+    String institutionName;
+    String location;
+    int establishedYear;
+    public EducationalInstitution(String institutionName, String location, int establishedYear){
+        this.institutionName = institutionName;
+        this.location = location;
+        this.establishedYear = establishedYear;
+    }
+    public void displayDetails(){
+        System.out.println("Institution Name: " + institutionName);
+        System.out.println("Location: " + location);
+        System.out.println("Established Year: " + establishedYear);
+    }
+public int calculateAge(){
+        int currentYear = 2025;
+        return currentYear - establishedYear;
+}
+}
+class HighSchool extends EducationalInstitution{
+    String schoolType;
+    int numberofStudents;
+    public HighSchool(String institutionName, String location, int establishedYear, String schoolType, int numberofStudents){
+        super(institutionName, location, establishedYear);
+        this.schoolType = schoolType;
+        this.numberofStudents = numberofStudents;
+    }
+public void displayDetails(){
+        super.displayDetails();
+    System.out.println("School Type: " + schoolType);
+    System.out.println("Number of Students: " + numberofStudents);
+}
+}
+class University extends EducationalInstitution{
+    int numberofDepartments;
+    boolean isResearchInstitution;
+    public University(String institutionName, String location, int establishedYear,  int numberofDepartments, boolean isResearchInstitution){
+        super(institutionName, location, establishedYear);
+        this.numberofDepartments = numberofDepartments;
+        this.isResearchInstitution = isResearchInstitution;
+    }
+public void displayDetails(){
+        super.displayDetails();
+    System.out.println("Number of Departments: " + numberofDepartments);
+    System.out.println("IsResearchInstitution: " + (isResearchInstitution ? "Yes" : "No"));
+}
+}
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter High School Details: ");
+        System.out.print("HighSchool Name: ");
+        String highschool = sc.nextLine();
+        System.out.print("Enter High School Location: ");
+        String highschoolLocation = sc.nextLine();
+        System.out.println("Enter Established Year:");
+        int establishedYear = sc.nextInt();
+        sc.nextLine();
+        System.out.println("School Type: (Public / Private): ");
+        String schoolType = sc.nextLine();
+        System.out.println("Number of Students:");
+        int numberofStudents = sc.nextInt();
+        HighSchool hschool = new HighSchool(highschool,highschoolLocation,establishedYear,schoolType,numberofStudents);
+        hschool.displayDetails();
+        System.out.println("High School Current Age:" + hschool.calculateAge() + "year\n");
+        System.out.println("Enter University Details: ");
+        System.out.println("University Name: ");
+        String uniname = sc.nextLine();
+        System.out.print("University Location: ");
+        String uniLocation = sc.nextLine();
+        System.out.println("Enter uniEstablished Year:");
+        int uniestablishedYear = sc.nextInt();
+        System.out.println("Number of Departments:");
+        int numberofDepartments = sc.nextInt();
+        System.out.println("Is it a Research Institution? (true/false)");
+        boolean isResearch = sc.nextBoolean();
+        sc.nextLine();
+        University uni = new University(uniname, uniLocation, uniestablishedYear, numberofDepartments, isResearch);
+        uni.displayDetails();
+        System.out.println("University Current Age:" + uni.calculateAge() + "year\n");
+        sc.close();
+    }
+}
