@@ -1,0 +1,148 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class MainVertical {
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Swing Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+        frame.setLocationRelativeTo(null);
+
+        JLabel label = new JLabel("Enter two numbers and choose an operation:");
+        JTextField number1Field = new JTextField(10);
+        JTextField number2Field = new JTextField(10);
+
+       
+        JButton addButton = new JButton("Add");
+        JButton subtractButton = new JButton("Subtract");
+        JButton multiplyButton = new JButton("Multiply");
+        JButton divideButton = new JButton("Divide");
+        JButton modulusButton = new JButton("Modulus");
+
+      
+        addButton.setBackground(Color.GREEN);
+        addButton.setForeground(Color.BLACK);
+
+        subtractButton.setBackground(Color.RED);
+        subtractButton.setForeground(Color.WHITE);
+
+        multiplyButton.setBackground(Color.ORANGE);
+        multiplyButton.setForeground(Color.BLACK);
+
+        divideButton.setBackground(Color.CYAN);
+        divideButton.setForeground(Color.BLACK);
+
+        modulusButton.setBackground(Color.MAGENTA);
+        modulusButton.setForeground(Color.WHITE);
+
+        
+        JLabel resultLabel = new JLabel("Result: ");
+        resultLabel.setForeground(Color.BLUE);
+        resultLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+       
+        addButton.addActionListener(e -> {
+            try {
+                double num1 = Double.parseDouble(number1Field.getText());
+                double num2 = Double.parseDouble(number2Field.getText());
+                resultLabel.setText("Result: " + (num1 + num2));
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Invalid input! Please enter valid numbers.");
+            }
+        });
+
+        subtractButton.addActionListener(e -> {
+            try {
+                double num1 = Double.parseDouble(number1Field.getText());
+                double num2 = Double.parseDouble(number2Field.getText());
+                resultLabel.setText("Result: " + (num1 - num2));
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Invalid input! Please enter valid numbers.");
+            }
+        });
+
+        multiplyButton.addActionListener(e -> {
+            try {
+                double num1 = Double.parseDouble(number1Field.getText());
+                double num2 = Double.parseDouble(number2Field.getText());
+                resultLabel.setText("Result: " + (num1 * num2));
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Invalid input! Please enter valid numbers.");
+            }
+        });
+
+        divideButton.addActionListener(e -> {
+            try {
+                double num1 = Double.parseDouble(number1Field.getText());
+                double num2 = Double.parseDouble(number2Field.getText());
+                if (num2 == 0) {
+                    resultLabel.setText("Cannot divide by zero!");
+                } else {
+                    resultLabel.setText("Result: " + (num1 / num2));
+                }
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Invalid input! Please enter valid numbers.");
+            }
+        });
+
+        modulusButton.addActionListener(e -> {
+            try {
+                double num1 = Double.parseDouble(number1Field.getText());
+                double num2 = Double.parseDouble(number2Field.getText());
+                if (num2 == 0) {
+                    resultLabel.setText("Cannot use modulus with zero!");
+                } else {
+                    resultLabel.setText("Result: " + (num1 % num2));
+                }
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Invalid input! Please enter valid numbers.");
+            }
+        });
+
+       
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBackground(new Color(240, 248, 255)); // Light blue background
+
+        panel.add(label);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JPanel input1Panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        input1Panel.setBackground(new Color(240, 248, 255));
+        input1Panel.add(new JLabel("Number 1:"));
+        input1Panel.add(number1Field);
+        panel.add(input1Panel);
+
+        JPanel input2Panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        input2Panel.setBackground(new Color(240, 248, 255));
+        input2Panel.add(new JLabel("Number 2:"));
+        input2Panel.add(number2Field);
+        panel.add(input2Panel);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+       
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setBackground(new Color(240, 248, 255));
+        buttonPanel.add(addButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(subtractButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(multiplyButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(divideButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(modulusButton);
+
+        panel.add(buttonPanel);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(resultLabel);
+
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+}
