@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,134 +8,136 @@ public class Main {
         frame.setSize(1005, 500);
         frame.setLocationRelativeTo(null);
 
-        JLabel label = new JLabel("Enter two numbers and click 'Add'");
+        JLabel label = new JLabel("Enter two numbers and click an operation:");
         JTextField number1Field = new JTextField(10);
         JTextField number2Field = new JTextField(10);
 
         JButton addButton = new JButton("Add");
-        JButton MinusButton = new JButton("Minus");
-        JButton MultiButton = new JButton("Multiplication");
-        JButton DivButton = new JButton("Division");
-        JButton ModButton = new JButton("Modulus");
+        JButton minusButton = new JButton("Minus");
+        JButton multiplyButton = new JButton("Multiplication");
+        JButton divideButton = new JButton("Division");
+        JButton modulusButton = new JButton("Modulus");
 
+        
+        addButton.setBackground(Color.GREEN);
+        addButton.setForeground(Color.BLACK);
+
+        minusButton.setBackground(Color.RED);
+        minusButton.setForeground(Color.WHITE);
+
+        multiplyButton.setBackground(Color.ORANGE);
+        multiplyButton.setForeground(Color.BLACK);
+
+        divideButton.setBackground(Color.CYAN);
+        divideButton.setForeground(Color.BLACK);
+
+        modulusButton.setBackground(Color.MAGENTA);
+        modulusButton.setForeground(Color.WHITE);
 
         JLabel resultLabel = new JLabel("Result: ");
+        resultLabel.setForeground(Color.BLUE);
+        resultLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
-
-        applyButtonHoverEffect(addButton, Color.GREEN);
-        applyButtonHoverEffect(MinusButton, Color.RED);
-        applyButtonHoverEffect(MultiButton, Color.ORANGE);
-        applyButtonHoverEffect(DivButton, Color.CYAN);
-        applyButtonHoverEffect(ModButton, Color.MAGENTA);
-
-
+       
         addButton.addActionListener(e -> {
             try {
                 double num1 = Double.parseDouble(number1Field.getText());
                 double num2 = Double.parseDouble(number2Field.getText());
-                double sum = num1 + num2;
-                resultLabel.setText("Result: " + sum);
+                resultLabel.setText("Result: " + (num1 + num2));
             } catch (NumberFormatException ex) {
                 resultLabel.setText("Invalid input! Please enter valid numbers.");
             }
         });
 
-        MinusButton.addActionListener(e -> {
+        minusButton.addActionListener(e -> {
             try {
                 double num1 = Double.parseDouble(number1Field.getText());
                 double num2 = Double.parseDouble(number2Field.getText());
-                double sub = num1 - num2;
-                resultLabel.setText("Result: " + sub);
+                resultLabel.setText("Result: " + (num1 - num2));
             } catch (NumberFormatException ex) {
                 resultLabel.setText("Invalid input! Please enter valid numbers.");
             }
         });
 
-        MultiButton.addActionListener(e -> {
+        multiplyButton.addActionListener(e -> {
             try {
                 double num1 = Double.parseDouble(number1Field.getText());
                 double num2 = Double.parseDouble(number2Field.getText());
-                double mul = num1 * num2;
-                resultLabel.setText("Result: " + mul);
+                resultLabel.setText("Result: " + (num1 * num2));
             } catch (NumberFormatException ex) {
                 resultLabel.setText("Invalid input! Please enter valid numbers.");
             }
         });
 
-        DivButton.addActionListener(e -> {
+        divideButton.addActionListener(e -> {
             try {
                 double num1 = Double.parseDouble(number1Field.getText());
                 double num2 = Double.parseDouble(number2Field.getText());
                 if (num2 == 0) {
                     resultLabel.setText("Cannot divide by zero!");
                 } else {
-                    double div = num1 / num2;
-                    resultLabel.setText("Result: " + div);
+                    resultLabel.setText("Result: " + (num1 / num2));
                 }
             } catch (NumberFormatException ex) {
                 resultLabel.setText("Invalid input! Please enter valid numbers.");
             }
         });
 
-        ModButton.addActionListener(e -> {
+        modulusButton.addActionListener(e -> {
             try {
                 double num1 = Double.parseDouble(number1Field.getText());
                 double num2 = Double.parseDouble(number2Field.getText());
                 if (num2 == 0) {
                     resultLabel.setText("Cannot perform modulus with zero!");
                 } else {
-                    double mod = num1 % num2;
-                    resultLabel.setText("Result: " + mod);
+                    resultLabel.setText("Result: " + (num1 % num2));
                 }
             } catch (NumberFormatException ex) {
                 resultLabel.setText("Invalid input! Please enter valid numbers.");
             }
         });
 
-
+       
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBackground(new Color(240, 248, 255)); // Light blue background
+
         panel.add(label);
-        panel.add(new JLabel("Number 1:"));
-        panel.add(number1Field);
-        panel.add(new JLabel("Number 2:"));
-        panel.add(number2Field);
-        panel.add(addButton);
-        panel.add(MinusButton);
-        panel.add(MultiButton);
-        panel.add(DivButton);
-        panel.add(ModButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JPanel input1Panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        input1Panel.setBackground(new Color(240, 248, 255));
+        input1Panel.add(new JLabel("Number 1:"));
+        input1Panel.add(number1Field);
+        panel.add(input1Panel);
+
+        JPanel input2Panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        input2Panel.setBackground(new Color(240, 248, 255));
+        input2Panel.add(new JLabel("Number 2:"));
+        input2Panel.add(number2Field);
+        panel.add(input2Panel);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setBackground(new Color(240, 248, 255));
+        buttonPanel.add(addButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(minusButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(multiplyButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(divideButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        buttonPanel.add(modulusButton);
+
+        panel.add(buttonPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(resultLabel);
 
-
         frame.add(panel);
-
-
         frame.setVisible(true);
-    }
-
-
-    public static void applyButtonHoverEffect(JButton button, Color hoverColor) {
-        Color originalColor = button.getBackground();
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                button.setBackground(hoverColor.darker());
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(originalColor);
-            }
-
-            public void mousePressed(MouseEvent e) {
-                button.setBackground(hoverColor);
-            }
-
-            public void mouseReleased(MouseEvent e) {
-                button.setBackground(hoverColor.darker());
-            }
-        });
     }
 }
