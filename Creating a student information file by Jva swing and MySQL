@@ -1,0 +1,136 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+public class RegistrationForm extends JFrame {
+    private JTextField idField, lastNameField, firstNameField, SemesterNoField, departmentField;
+    private JButton saveButton, uploadButton;
+    private JLabel photoLabel;
+    private String imagePath = "";
+    public RegistrationForm() {
+        setTitle("Student Information");
+        setSize(600, 350);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("ID Number:"), gbc);
+        gbc.gridx = 1;
+        idField = new JTextField(15);
+        panel.add(idField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Last Name:"), gbc);
+        gbc.gridx = 1;
+        lastNameField = new JTextField(15);
+        panel.add(lastNameField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(new JLabel("First Name:"), gbc);
+        gbc.gridx = 1;
+        firstNameField = new JTextField(15);
+        panel.add(firstNameField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(new JLabel("Semester No:"), gbc);
+        gbc.gridx = 1;
+        SemesterNoField = new JTextField(15);
+        panel.add(SemesterNoField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panel.add(new JLabel("Department:"), gbc);
+        gbc.gridx = 1;
+        departmentField = new JTextField(15);
+        panel.add(departmentField, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 1;
+        gbc.gridheight = 4;
+        gbc.fill = GridBagConstraints.BOTH;
+        photoLabel = new JLabel();
+        photoLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.add(photoLabel, gbc);
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 3;
+        gbc.gridy = 5;
+        uploadButton = new JButton("Upload");
+        panel.add(uploadButton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        saveButton = new JButton("Save");
+        gbc.gridwidth = 4;
+        panel.add(saveButton, gbc);
+        gbc.gridwidth = 1;
+        saveButton.addActionListener(e -> saveStudent());
+        uploadButton.addActionListener(e -> chooseImage());
+        add(panel);
+        setVisible(true);
+    }
+    private void chooseImage() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File f = chooser.getSelectedFile();
+        if (f != null) {
+            imagePath = f.getAbsolutePath();
+            try {
+                BufferedImage bi = ImageIO.read(f);
+                Image img = bi.getScaledInstance(134, 172, Image.SCALE_SMOOTH);
+                ImageIcon icon = new ImageIcon(img);
+                photoLabel.setIcon(icon);
+            } catch (IOException ex) {
+                Logger.getLogger(RegistrationForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    private void saveStudent() {
+        String id = idField.getText();
+        String lastName = lastNameField.getText();
+        String firstName = firstNameField.getText();
+        String semester = SemesterNoField.getText();
+        String department = departmentField.getText();
+        if (id.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || semester.isEmpty() || department.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields.");
+            return;
+        }
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = "INSERT INTO students (id, last_name, first_name, semester_no, department, photo_path) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            stmt.setString(2, lastName);
+            stmt.setString(3, firstName);
+            stmt.setString(4, semester);
+            stmt.setString(5, department);
+            stmt.setString(6, imagePath);
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Student information saved successfully!");
+            clearFields();
+        } catch (SQLIntegrityConstraintViolationException dup) {
+            JOptionPane.showMessageDialog(this, "ID already exists.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Saving failed.");
+        }
+    }
+    private void clearFields() {
+        idField.setText("");
+        lastNameField.setText("");
+        firstNameField.setText("");
+        SemesterNoField.setText("");
+        departmentField.setText("");
+        photoLabel.setIcon(null);
+        imagePath = "";
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(RegistrationForm::new);
+    }
+}
