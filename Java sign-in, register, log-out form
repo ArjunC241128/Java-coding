@@ -1,0 +1,225 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+
+public class LoginRegisterApp {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/myproject";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "";
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(LoginRegisterApp::createLoginWindow);
+    }
+
+    private static void createLoginWindow() {
+        JFrame loginFrame = new JFrame("Login");
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.setSize(400, 250);
+        loginFrame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel usernameLabel = new JLabel("Username:");
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(usernameLabel, gbc);
+
+        JTextField usernameField = new JTextField(20);
+        gbc.gridx = 1; gbc.gridy = 0;
+        panel.add(usernameField, gbc);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(passwordLabel, gbc);
+
+        JPasswordField passwordField = new JPasswordField(20);
+        gbc.gridx = 1; gbc.gridy = 1;
+        panel.add(passwordField, gbc);
+
+        JButton loginButton = new JButton("Login");
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(loginButton, gbc);
+
+        JButton registerButton = new JButton("Register");
+        gbc.gridx = 1; gbc.gridy = 2;
+        panel.add(registerButton, gbc);
+
+        loginFrame.add(panel);
+
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(loginFrame, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    loginFrame.dispose();
+                    showWelcomeScreen(username);
+                } else {
+                    JOptionPane.showMessageDialog(loginFrame, "Invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(loginFrame, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        registerButton.addActionListener(e -> {
+            loginFrame.dispose();
+            createRegisterWindow();
+        });
+
+        loginFrame.setVisible(true);
+    }
+
+    private static void createRegisterWindow() {
+        JFrame registerFrame = new JFrame("Register");
+        registerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        registerFrame.setSize(500, 500);
+        registerFrame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel idLabel = new JLabel("ID:");
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(idLabel, gbc);
+
+        JTextField idField = new JTextField(20);
+        gbc.gridx = 1; gbc.gridy = 0;
+        panel.add(idField, gbc);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(usernameLabel, gbc);
+
+        JTextField usernameField = new JTextField(20);
+        gbc.gridx = 1; gbc.gridy = 1;
+        panel.add(usernameField, gbc);
+
+        JLabel emailLabel = new JLabel("Email:");
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(emailLabel, gbc);
+
+        JTextField emailField = new JTextField(20);
+        gbc.gridx = 1; gbc.gridy = 2;
+        panel.add(emailField, gbc);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        gbc.gridx = 0; gbc.gridy = 3;
+        panel.add(passwordLabel, gbc);
+
+        JPasswordField passwordField = new JPasswordField(20);
+        gbc.gridx = 1; gbc.gridy = 3;
+        panel.add(passwordField, gbc);
+
+        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+        gbc.gridx = 0; gbc.gridy = 4;
+        panel.add(confirmPasswordLabel, gbc);
+
+        JPasswordField confirmPasswordField = new JPasswordField(20);
+        gbc.gridx = 1; gbc.gridy = 4;
+        panel.add(confirmPasswordField, gbc);
+
+        JLabel semesterLabel = new JLabel("Current Semester:");
+        gbc.gridx = 0; gbc.gridy = 5;
+        panel.add(semesterLabel, gbc);
+
+        JTextField semesterField = new JTextField(20);
+        gbc.gridx = 1; gbc.gridy = 5;
+        panel.add(semesterField, gbc);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+
+        JButton submitButton = new JButton("Submit");
+        JButton logoutButton = new JButton("Logout");
+
+        buttonPanel.add(submitButton);
+        buttonPanel.add(logoutButton);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2;
+        panel.add(buttonPanel, gbc);
+
+        registerFrame.add(panel);
+
+        // Submit action
+        submitButton.addActionListener(e -> {
+            String id = idField.getText();
+            String username = usernameField.getText();
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+            String semester = semesterField.getText();
+
+            if (id.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || semester.isEmpty()) {
+                JOptionPane.showMessageDialog(registerFrame, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(registerFrame, "Passwords do not match", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                String sql = "INSERT INTO users (id, username, email, password, semester) VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, Integer.parseInt(id));
+                stmt.setString(2, username);
+                stmt.setString(3, email);
+                stmt.setString(4, password);
+                stmt.setString(5, semester);
+
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(registerFrame, "Registration successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                registerFrame.dispose();
+                createLoginWindow();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(registerFrame, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(registerFrame, "ID must be a number", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Logout action
+        logoutButton.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(registerFrame, "Are you sure you want to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                registerFrame.dispose();
+                createLoginWindow();
+            }
+        });
+
+        registerFrame.setVisible(true);
+    }
+
+    private static void showWelcomeScreen(String username) {
+        JFrame welcomeFrame = new JFrame("Welcome");
+        welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        welcomeFrame.setSize(300, 150);
+        welcomeFrame.setLocationRelativeTo(null);
+
+        JLabel welcomeLabel = new JLabel("Welcome, " + username + "!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
+        welcomeFrame.add(welcomeLabel);
+        welcomeFrame.setVisible(true);
+    }
+}
